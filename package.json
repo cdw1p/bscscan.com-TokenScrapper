@@ -1,0 +1,24 @@
+{
+  "name": "bscscan.com-tokenscrapper",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/cdw1p/bscscan.com-TokenScrapper.git"
+  },
+  "author": "cdw1p",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/cdw1p/bscscan.com-TokenScrapper/issues"
+  },
+  "homepage": "https://github.com/cdw1p/bscscan.com-TokenScrapper#readme",
+  "dependencies": {
+    "cheerio": "^1.0.0-rc.9",
+    "cheerio-tableparser": "^1.0.1",
+    "node-fetch": "^2.6.1"
+  }
+}
