@@ -19,6 +19,10 @@
   "dependencies": {
     "cheerio": "^1.0.0-rc.9",
     "cheerio-tableparser": "^1.0.1",
+    "colors": "^1.4.0",
+    "delay": "^5.0.0",
+    "fs-extra": "^10.0.0",
+    "moment": "^2.29.1",
     "node-fetch": "^2.6.1"
   }
 }
