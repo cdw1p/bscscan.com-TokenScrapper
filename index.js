@@ -49,7 +49,7 @@ const functionFindBSCToken = () => new Promise(async (resolve, reject) => {
 
     for (loop = 1; loop < totalData; loop++) {
       await delay(5 * 1000)
-      fetch(`https://bscscan.com/tokens?q=${watcherKeyword}&p=${currentPage}`, customPayload)
+      await fetch(`https://bscscan.com/tokens?q=${watcherKeyword[0]}&p=${currentPage}`, customPayload)
       .then(res => res.text())
       .then(result => {
         const $ = cheerio.load(result)
@@ -98,12 +98,12 @@ const functionFindBSCInfo = (tokenData) => new Promise(async (resolve, reject) =
       .then(result => {
         const $ = cheerio.load(result)
         const tokenPrice = ($('#ContentPlaceHolder1_tr_valuepertoken > div > div:nth-child(1) > span').text()).split(' @ ')[0].split('$')[1]
-        const tokenHolders = $('#ContentPlaceHolder1_tr_tokenHolders > div > div.col-md-8 > div > div').text()
-        if (parseFloat(tokenPrice) < thresholdPrice && parseFloat(tokenHolders) > thresholdHolder) {
-          console.log(`${`++ Found : ${tokenName} (${tokenSymbol}) - $${tokenPrice}`.green}\n - Contract: ${tokenContract}\n - Website: ${tokenSite}\n - Holder: ${tokenHolders.trim()}\n-`)
+        const tokenHolders = ($('#ContentPlaceHolder1_tr_tokenHolders > div > div.col-md-8 > div > div').text()).split(' addresses')[0].replace(',', '')
+        if (parseFloat(tokenPrice) <= parseFloat(thresholdPrice.split(' - $')[1]) && parseFloat(tokenHolders) >= parseFloat(thresholdHolder)) {
+          console.log(`${`++ Token Found : ${tokenName} (${tokenSymbol}) - $${tokenPrice}`.green}\n - Contract: ${tokenContract}\n - Website: ${tokenSite}\n - Holder: ${tokenHolders.trim()} Address\n -`)
           tempData.push({ tokenContract, tokenName, tokenSymbol, tokenDecimals, tokenSite, tokenPrice: `$${tokenPrice}`, tokenHolders: tokenHolders.trim() })
         } else {
-          console.log(`${`++ Skipping : ${tokenName} (${tokenSymbol}) - $${tokenPrice}`.yellow}\n - Contract: ${tokenContract}\n - Website: ${tokenSite}\n - Holder: ${tokenHolders.trim()}\n-`)
+          console.log(`${`++ Skipping : ${tokenName} (${tokenSymbol}) - $${tokenPrice}`.yellow}\n - Contract: ${tokenContract}\n - Website: ${tokenSite}\n - Holder: ${tokenHolders.trim()} Address\n -`)
         }
       })
       await delay(5 * 1000)
@@ -123,7 +123,9 @@ const functionFindBSCInfo = (tokenData) => new Promise(async (resolve, reject) =
     const resFindBSCToken = await functionFindBSCToken()
     if (resFindBSCToken.success) {
       const resFindBSCInfo = await functionFindBSCInfo(resFindBSCToken.message)
-      await fs.writeFileSync('output.json', JSON.stringify(resFindBSCInfo.message, null, 2))
+      if (resFindBSCInfo.success) {
+        await fs.writeFileSync('output.json', JSON.stringify(resFindBSCInfo.message, null, 2))
+      }
     } else {
       throw new Error(resFindBSCToken.message)
     }
